@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "7dd06e2597080c45813d",
   "position": {
     "x": 0,
@@ -65,21 +65,7 @@
           ]
         },
         "Y2": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Internet Sales"
-                    }
-                  },
-                  "Property": "Order Lines Count"
-                }
-              },
-              "queryRef": "Internet Sales.Order Lines Count"
-            }
-          ]
+          "projections": []
         }
       },
       "sortDefinition": {
@@ -101,5 +87,51 @@
       }
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2e013ab73fb0bf4fa8ee",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Date"
+              }
+            },
+            "Property": "Quarter in Year"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6dd54893e13ed9944fd1",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Customer"
+              }
+            },
+            "Property": "MaritalStatus"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "9b7f17e5d6daadfeb93a",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Internet Sales"
+              }
+            },
+            "Property": "Total Units"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
