@@ -24,7 +24,7 @@ table 'Internet Sales'
 		formatString: 0
 		lineageTag: 731d13cd-a85e-48df-964a-39e9f3b8d332
 
-	measure 'Total Sales' = SUM('Internet Sales'[SalesAmount])
+	measure 'Total Sales' = SUM('Internet Sales'[SalesAmount]) +1
 		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
 		lineageTag: f1b9c8f4-f5f0-4008-9522-0403c45e6d87
 
