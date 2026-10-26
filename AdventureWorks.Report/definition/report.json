@@ -65,17 +65,6 @@
           "type": "CustomTheme"
         }
       ]
-    },
-    {
-      "name": "ChicletSlicer1448559807354",
-      "type": "CustomVisual",
-      "items": [
-        {
-          "name": "ChicletSlicer1448559807354.pbiviz.json",
-          "path": "ChicletSlicer1448559807354.pbiviz.json",
-          "type": "CustomVisualMetadata"
-        }
-      ]
     }
   ],
   "settings": {
