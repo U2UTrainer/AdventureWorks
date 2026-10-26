@@ -1,0 +1,247 @@
+table 'Internet Sales'
+	lineageTag: 6265776d-05c6-456f-93b3-ff6669740b9e
+
+	refreshPolicy
+		policyType: basic
+		rollingWindowGranularity: year
+		rollingWindowPeriods: 20
+		incrementalGranularity: month
+		incrementalPeriods: 1
+		sourceExpression =
+			let
+			    Source = Sql.Database("u2u-sql.database.windows.net", "UBIPB_AdventureWorksDW2014"),
+			    dbo_FactInternetSales = Source{[Schema="dbo",Item="FactInternetSales"]}[Data],
+			    #"Removed Other Columns" = Table.SelectColumns(dbo_FactInternetSales,{"ProductKey", "OrderDateKey", "DueDateKey", "ShipDateKey", "CustomerKey", "SalesOrderNumber", "SalesOrderLineNumber", "OrderQuantity", "UnitPrice", "TotalProductCost", "SalesAmount", "TaxAmt", "Freight", "OrderDate"}),
+			    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each [OrderDate] >= RangeStart and [OrderDate] < RangeEnd)
+			in
+			    #"Filtered Rows"
+
+	measure 'Order Lines Counts' = COUNT('Internet Sales'[SalesOrderLineNumber])
+		formatString: 0
+		lineageTag: 72c17870-082a-4efe-8768-034520cd1a68
+
+	measure 'Total Units' = SUM('Internet Sales'[OrderQuantity])
+		formatString: 0
+		lineageTag: 731d13cd-a85e-48df-964a-39e9f3b8d332
+
+	measure 'Total Sales' = SUM('Internet Sales'[SalesAmount])
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: f1b9c8f4-f5f0-4008-9522-0403c45e6d87
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-BE"}
+
+	measure 'Total Freight' = SUM('Internet Sales'[Freight])
+		formatString: #,0\ "€";-#,0\ "€";#,0\ "€"
+		lineageTag: 4955edff-a7df-490a-a3af-2e72eb5926f9
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-BE"}
+
+	measure 'Distinct Customer Count' = DISTINCTCOUNT('Internet Sales'[CustomerKey])
+		formatString: 0
+		lineageTag: e95df47b-80d7-46b3-9650-175cbc93aa37
+
+	measure 'Total Product Cost' = SUM('Internet Sales'[TotalProductCost])
+		formatString: #,0.###############\ "€";-#,0.###############\ "€";#,0.###############\ "€"
+		lineageTag: 642c901e-02ba-4f79-ba32-68a443d73ee2
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-BE"}
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c451c309-ed6b-4962-93a8-38da8514a8a8
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 56b3d30d-0f4f-4c2f-8a36-094b0bbb9814
+		summarizeBy: count
+		sourceColumn: OrderDateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DueDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 3a9f280c-8657-4761-bd2f-8b9f8e94a055
+		summarizeBy: none
+		sourceColumn: DueDateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2cfdd0d7-7796-4e15-a6b9-89cb57911391
+		summarizeBy: count
+		sourceColumn: ShipDateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 009c4379-6fbd-425a-b0b6-9e3221ad47bc
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesOrderNumber
+		dataType: string
+		isHidden
+		lineageTag: 0b6311c9-75de-4a7f-b423-6b8e7631da4c
+		summarizeBy: none
+		sourceColumn: SalesOrderNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column SalesOrderLineNumber
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 19941592-8ded-4113-a0d1-bc91a3d939be
+		summarizeBy: sum
+		sourceColumn: SalesOrderLineNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderQuantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 250d6fde-84b9-4250-97df-0148ebafccf0
+		summarizeBy: sum
+		sourceColumn: OrderQuantity
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPrice
+		dataType: decimal
+		isHidden
+		formatString: #,0.###############\ "€";-#,0.###############\ "€";#,0.###############\ "€"
+		lineageTag: 9d73abba-45a0-490c-ac03-8e13e20347cf
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-BE"}
+
+	column TotalProductCost
+		dataType: decimal
+		isHidden
+		formatString: #,0.###############\ "€";-#,0.###############\ "€";#,0.###############\ "€"
+		lineageTag: ac05ee1d-7a25-4abe-8a55-9da474ccec18
+		summarizeBy: sum
+		sourceColumn: TotalProductCost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-BE"}
+
+	column SalesAmount
+		dataType: decimal
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: b5f4c779-4351-4864-b7d6-d481d2c056d8
+		summarizeBy: sum
+		sourceColumn: SalesAmount
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-BE"}
+
+	column TaxAmt
+		dataType: decimal
+		isHidden
+		formatString: #,0.###############\ "€";-#,0.###############\ "€";#,0.###############\ "€"
+		lineageTag: 6c8f01ca-ae7c-48e3-81b2-6b3c33166251
+		summarizeBy: sum
+		sourceColumn: TaxAmt
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-BE"}
+
+	column Freight
+		dataType: decimal
+		isHidden
+		formatString: #,0.###############\ "€";-#,0.###############\ "€";#,0.###############\ "€"
+		lineageTag: 87c6090e-2358-4d86-bb6a-9f18f0ef7fa4
+		summarizeBy: sum
+		sourceColumn: Freight
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-BE"}
+
+	column OrderDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e4c1c24a-b1f2-4308-9209-02bbe9d0c748
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Internet Sales-7f65add3-9244-42b5-905e-9319c3927943' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("u2u-sql.database.windows.net", "UBIPB_AdventureWorksDW2014"),
+				    dbo_FactInternetSales = Source{[Schema="dbo",Item="FactInternetSales"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(dbo_FactInternetSales,{"ProductKey", "OrderDateKey", "DueDateKey", "ShipDateKey", "CustomerKey", "SalesOrderNumber", "SalesOrderLineNumber", "OrderQuantity", "UnitPrice", "TotalProductCost", "SalesAmount", "TaxAmt", "Freight", "OrderDate"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each [OrderDate] >= RangeStart and [OrderDate] < RangeEnd)
+				in
+				    #"Filtered Rows"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_IsMQueryFoldable = True
+

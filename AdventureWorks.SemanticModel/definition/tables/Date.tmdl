@@ -1,0 +1,156 @@
+table Date
+	lineageTag: 6649fc4f-adef-4b16-80ab-143a8d441416
+
+	column DateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7abb2a88-8ec4-4b0f-a27b-19ecc79357ba
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		lineageTag: 25a644d6-2b18-420b-bf68-531a25fc1ec6
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Month
+		dataType: string
+		lineageTag: 232da995-14e4-4a0a-888c-c9074393713c
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: MonthNumberOfYear
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column MonthNumberOfYear
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b25a98e4-a926-48c6-afc2-09dda1ec7654
+		summarizeBy: none
+		sourceColumn: MonthNumberOfYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CalendarQuarter
+		dataType: int64
+		formatString: 0
+		lineageTag: ae83c84b-b9f7-4d13-8090-10f10eef978c
+		summarizeBy: none
+		sourceColumn: CalendarQuarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column CalendarYear
+		dataType: int64
+		formatString: 0
+		lineageTag: 71f83501-8811-434f-a9e9-4035fd14fe2b
+		summarizeBy: none
+		sourceColumn: CalendarYear
+
+		annotation SummarizationSetBy = Automatic
+
+	column FiscalQuarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 304b56a4-2173-4b1f-9df2-bc8fcf733446
+		summarizeBy: none
+		sourceColumn: FiscalQuarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column FiscalYear
+		dataType: int64
+		formatString: 0
+		lineageTag: f3f7b3b6-4e8b-45e3-bf68-c7afd569e020
+		summarizeBy: none
+		sourceColumn: FiscalYear
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quarter in Year' = ```
+			"Q" & 'Date'[CalendarQuarter] & " - CY" & 'Date'[CalendarYear] 
+			```
+		lineageTag: 550ca2de-9966-415d-a977-d18d2d13324a
+		summarizeBy: none
+		sortByColumn: CalendarYear
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	hierarchy 'Calendar Hierarchy'
+		lineageTag: 6e68ea5c-af60-465c-ba87-415122029740
+
+		level CalendarYear
+			lineageTag: 5e7d86da-13ca-4b32-ac8d-650b9c6d7502
+			column: CalendarYear
+
+		level CalendarQuarter
+			lineageTag: e577c3e1-280b-42fb-91da-c76bb61d40ab
+			column: CalendarQuarter
+
+		level Month
+			lineageTag: aa987296-9bec-4dc5-a47a-76c13dad9071
+			column: Month
+
+		level Date
+			lineageTag: 10d5d8e1-4d3e-4bb3-a773-dcad82d4aa6d
+			column: Date
+
+	hierarchy 'Fiscal Hierarchy'
+		lineageTag: 6d46b837-1139-4d94-994d-48fe264fa89a
+
+		level FiscalYear
+			lineageTag: 05ab3f01-f93b-42b0-9a6b-07efed4612ad
+			column: FiscalYear
+
+		level FiscalQuarter
+			lineageTag: b3c2fc8f-b911-45e0-91c7-cb898e654ad3
+			column: FiscalQuarter
+
+		level Month
+			lineageTag: 4d13c3af-ebd7-4ea9-a2b4-14d29dba2131
+			column: Month
+
+		level Date
+			lineageTag: 0e66865e-e970-4a40-879d-e8f3e94324b6
+			column: Date
+
+	partition Date-a94357b4-9125-469c-b87d-e2fb85c42019 = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("u2u-sql.database.windows.net", "UBIPB_AdventureWorksDW2014"),
+				    dbo_DimDate = Source{[Schema="dbo",Item="DimDate"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(dbo_DimDate,{"DateKey", "FullDateAlternateKey", "EnglishMonthName", "MonthNumberOfYear", "CalendarQuarter", "CalendarYear", "FiscalQuarter", "FiscalYear"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"FullDateAlternateKey", "Date"}, {"EnglishMonthName", "Month"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

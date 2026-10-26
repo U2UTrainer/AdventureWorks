@@ -1,0 +1,15 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "ReportSection28428f041a01b9d2a649",
+  "displayName": "Filters and Slicers",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "b8679da15272ab7d698e",
+      "target": "f1b34e1f4a9e5bd9d09b",
+      "type": "NoFilter"
+    }
+  ]
+}

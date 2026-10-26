@@ -1,0 +1,52 @@
+table Subcategory
+	lineageTag: 5d487a6f-98e6-43aa-87e3-9bcc06bfa2c1
+
+	column ProductSubcategoryKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8881bed3-fbd4-4adb-9a1b-ec5d6c07f487
+		summarizeBy: none
+		sourceColumn: ProductSubcategoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Subcategory
+		dataType: string
+		lineageTag: 0a0a2322-b175-48ec-bdfc-531e9e736c1c
+		summarizeBy: none
+		sourceColumn: Subcategory
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column ProductCategoryKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: edbd1f77-9f74-45cd-9e85-4ecd11bd5531
+		summarizeBy: none
+		sourceColumn: ProductCategoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Subcategory-e292ec33-3711-4af4-9620-ab5569d1b831 = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("u2u-sql.database.windows.net", "UBIPB_AdventureWorksDW2014"),
+				    dbo_DimProductSubcategory = Source{[Schema="dbo",Item="DimProductSubcategory"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(dbo_DimProductSubcategory,{"ProductSubcategoryKey", "EnglishProductSubcategoryName", "ProductCategoryKey"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"EnglishProductSubcategoryName", "Subcategory"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

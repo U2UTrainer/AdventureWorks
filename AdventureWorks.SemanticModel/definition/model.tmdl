@@ -1,0 +1,26 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-BE
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["Customer","Date","Geography","Product","Category","Subcategory","Internet Sales","RangeStart","RangeEnd"]
+
+annotation PBI_ProTooling = ["MCP-PBIModeling","DevMode"]
+
+ref table Customer
+ref table Date
+ref table Geography
+ref table Product
+ref table Category
+ref table Subcategory
+ref table 'Internet Sales'
+
+ref role UserCountry
+
+ref cultureInfo en-US
+

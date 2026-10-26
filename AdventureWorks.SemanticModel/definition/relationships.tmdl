@@ -1,0 +1,50 @@
+relationship 39b80561-8454-4dfa-a449-cbc73028f34b
+	fromColumn: Customer.GeographyKey
+	toColumn: Geography.GeographyKey
+
+	annotation PBI_IsFromSource = FS
+
+relationship c5affe9e-43bf-4386-b874-f2e1a1f1a559
+	fromColumn: 'Internet Sales'.CustomerKey
+	toColumn: Customer.CustomerKey
+
+	annotation PBI_IsFromSource = FS
+
+relationship 4f872ab5-71d2-40de-b52c-3e2820ea73a4
+	fromColumn: 'Internet Sales'.DueDateKey
+	toColumn: Date.DateKey
+
+	annotation PBI_IsFromSource = FS
+
+relationship 2d294ff9-7eda-45a2-9398-eaa86233039e
+	isActive: false
+	fromColumn: 'Internet Sales'.OrderDateKey
+	toColumn: Date.DateKey
+
+	annotation PBI_IsFromSource = FS
+
+relationship 9bbb9546-b466-43a1-89c0-b008164149b8
+	isActive: false
+	fromColumn: 'Internet Sales'.ShipDateKey
+	toColumn: Date.DateKey
+
+	annotation PBI_IsFromSource = FS
+
+relationship d0bd6e8f-01d2-4273-9845-52e2dd49ac3a
+	fromColumn: Product.ProductSubcategoryKey
+	toColumn: Subcategory.ProductSubcategoryKey
+
+	annotation PBI_IsFromSource = FS
+
+relationship bf0097d7-847a-4002-a165-51ea1fbea421
+	fromColumn: 'Internet Sales'.ProductKey
+	toColumn: Product.ProductKey
+
+	annotation PBI_IsFromSource = FS
+
+relationship e62de133-5feb-407d-bf0e-321d7c7b748d
+	fromColumn: Subcategory.ProductCategoryKey
+	toColumn: Category.ProductCategoryKey
+
+	annotation PBI_IsFromSource = FS
+

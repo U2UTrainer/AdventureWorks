@@ -1,0 +1,40 @@
+table Category
+	lineageTag: 3cf49af0-8f69-453e-b1a2-0200e944a0e4
+
+	column ProductCategoryKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a196aabe-d00c-42b0-a4c6-187d7e0b8b5c
+		summarizeBy: none
+		sourceColumn: ProductCategoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: a94a39a7-6d4b-4902-9ed8-0294227c3632
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	partition Category-03c722e1-a478-4a3e-8409-13adfae41689 = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("u2u-sql.database.windows.net", "UBIPB_AdventureWorksDW2014"),
+				    dbo_DimProductCategory = Source{[Schema="dbo",Item="DimProductCategory"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(dbo_DimProductCategory,{"ProductCategoryKey", "EnglishProductCategoryName"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"EnglishProductCategoryName", "Category"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

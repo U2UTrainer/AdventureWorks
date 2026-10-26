@@ -1,0 +1,120 @@
+table Geography
+	lineageTag: 331f260c-2ff4-4cbb-8123-67775c39f540
+
+	column GeographyKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f9cbbd50-f792-4226-b903-90e5bcdc6078
+		summarizeBy: none
+		sourceColumn: GeographyKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 36c53aa5-bb64-4c41-b521-dfd173efa5db
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column StateProvince
+		dataType: string
+		lineageTag: 57a331a8-5d51-49ff-9a9c-b69a71a8cceb
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: StateProvince
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Country
+		dataType: string
+		lineageTag: a92bf40e-289d-459a-bfcc-5081b857b874
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"Geography","TableItemName":"Continents","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Continents =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('Geography'[Country]),
+			  "(Blank)",
+			  'Geography'[Country] IN {"France",
+			    "Germany",
+			    "United Kingdom"},
+			  "Europe",
+			  'Geography'[Country] IN {"Canada",
+			    "United States"},
+			  "North America",
+			  "Other"
+			)
+		lineageTag: 141df8de-be43-4c34-978d-62d5d1b6bc3b
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "Geography"
+				          }
+				        },
+				        "Property": "Country"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"g","Entity":"Geography"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"g"}},"Property":"Country"}}],"GroupItems":[{"DisplayName":"(Blank)","BlankDefaultPlaceholder":true},{"DisplayName":"Europe","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"g"}},"Property":"Country"}}],"Values":[[{"Literal":{"Value":"'France'"}}],[{"Literal":{"Value":"'Germany'"}}],[{"Literal":{"Value":"'United Kingdom'"}}]]}}},{"DisplayName":"North America","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"g"}},"Property":"Country"}}],"Values":[[{"Literal":{"Value":"'Canada'"}}],[{"Literal":{"Value":"'United States'"}}]]}}},{"DisplayName":"Other"}]}
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	hierarchy Geography
+		lineageTag: 333e0cf5-d451-49ec-87ec-601f0d560cda
+
+		level Country
+			lineageTag: 67f3fce0-c503-4718-b224-c2ad7482bb0f
+			column: Country
+
+		level StateProvince
+			lineageTag: ad67047f-ff36-475f-9ef3-9e461d866928
+			column: StateProvince
+
+		level City
+			lineageTag: b2b30456-e44e-4a96-9501-c356bda65adf
+			column: City
+
+	partition Geography-d6b981a2-4e8e-444a-a6d1-7f1f99f391bf = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("u2u-sql.database.windows.net", "UBIPB_AdventureWorksDW2014"),
+				    dbo_DimGeography = Source{[Schema="dbo",Item="DimGeography"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(dbo_DimGeography,{"GeographyKey", "City", "StateProvinceName", "EnglishCountryRegionName"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"StateProvinceName", "StateProvince"}, {"EnglishCountryRegionName", "Country"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

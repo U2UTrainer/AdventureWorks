@@ -1,0 +1,72 @@
+table Product
+	lineageTag: 92dffd96-65cf-4d9f-a392-a6467bdda5bc
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7e1e9db0-3c51-48d8-ae40-72e785f56cd3
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductSubcategoryKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c7272239-0edc-4fc6-adce-5df5774e7649
+		summarizeBy: none
+		sourceColumn: ProductSubcategoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductName
+		dataType: string
+		lineageTag: dcd8112b-1d55-4a44-99b4-8bbca9eb8047
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Color
+		dataType: string
+		lineageTag: 3635f06c-95e5-4e15-8163-b7aa1c06582d
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column SizeRange
+		dataType: string
+		lineageTag: e2ed8e2e-7e92-44e6-b156-4f79bb13a1ea
+		summarizeBy: none
+		sourceColumn: SizeRange
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	partition Product-d9a2ce07-e13f-4243-bcfb-fec937e80517 = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("u2u-sql.database.windows.net", "UBIPB_AdventureWorksDW2014"),
+				    dbo_DimProduct = Source{[Schema="dbo",Item="DimProduct"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(dbo_DimProduct,{"ProductKey", "ProductSubcategoryKey", "EnglishProductName", "Color", "SizeRange", "LargePhoto"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"EnglishProductName", "ProductName"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

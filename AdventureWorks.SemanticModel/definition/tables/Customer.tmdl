@@ -1,0 +1,149 @@
+table Customer
+	lineageTag: e714cb1a-cbe9-4785-b677-243c2bbba656
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: cdd1df32-aa91-49cf-a7e0-b6697dd1c894
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column GeographyKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 017ea4b5-930d-45ca-aed4-0aab97a572c8
+		summarizeBy: none
+		sourceColumn: GeographyKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FirstName
+		dataType: string
+		isHidden
+		lineageTag: dc0e3230-5a4c-4733-8835-6fa768aa9c1a
+		summarizeBy: none
+		sourceColumn: FirstName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column LastName
+		dataType: string
+		isHidden
+		lineageTag: 85f875c6-6a22-400f-bf6f-c8ed8fcc3cce
+		summarizeBy: none
+		sourceColumn: LastName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column MaritalStatus
+		dataType: string
+		lineageTag: 42338912-c690-4eec-b2ba-870ab9b507d6
+		summarizeBy: none
+		sourceColumn: MaritalStatus
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Gender
+		dataType: string
+		lineageTag: 496d698a-6061-44f2-8d97-52e60476b9b8
+		summarizeBy: none
+		sourceColumn: Gender
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column YearlyIncome
+		dataType: decimal
+		formatString: #,0.###############\ "€";-#,0.###############\ "€";#,0.###############\ "€"
+		lineageTag: cd9dc9f7-fc90-44d6-b810-b67dc07ba221
+		summarizeBy: none
+		sourceColumn: YearlyIncome
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-BE"}
+
+	column TotalChildren
+		dataType: int64
+		formatString: 0
+		lineageTag: 2e67e89b-f828-4ba6-893a-de6beb42dd79
+		summarizeBy: none
+		sourceColumn: TotalChildren
+
+		annotation SummarizationSetBy = User
+
+	column EnglishEducation
+		dataType: string
+		lineageTag: 59c15752-dc0f-420e-a5a7-fd2591162f68
+		summarizeBy: none
+		sourceColumn: EnglishEducation
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column EnglishOccupation
+		dataType: string
+		lineageTag: 874d62fa-7a6e-4dc2-916f-369584308bb2
+		summarizeBy: none
+		sourceColumn: EnglishOccupation
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column CommuteDistance
+		dataType: string
+		lineageTag: 4a764055-f03b-4488-b83b-715cf67b4f9c
+		summarizeBy: none
+		sourceColumn: CommuteDistance
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Full Name' = Customer[FirstName]& " " & Customer[LastName]
+		lineageTag: 9b717d9f-b84c-4d69-83bf-fa007f00b9ae
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	partition Customer-cb3b1a63-c99b-4517-a6dc-cbec52192236 = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("u2u-sql.database.windows.net", "UBIPB_AdventureWorksDW2014"),
+				    dbo_DimCustomer = Source{[Schema="dbo",Item="DimCustomer"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(dbo_DimCustomer,{"CustomerKey", "GeographyKey", "FirstName", "LastName", "MaritalStatus", "Gender", "YearlyIncome", "TotalChildren", "EnglishEducation", "EnglishOccupation", "CommuteDistance"}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Removed Other Columns","M","Married",Replacer.ReplaceText,{"MaritalStatus"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","S","Single",Replacer.ReplaceText,{"MaritalStatus"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","M","Male",Replacer.ReplaceText,{"Gender"}),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","F","Female",Replacer.ReplaceText,{"Gender"})
+				in
+				    #"Replaced Value3"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
